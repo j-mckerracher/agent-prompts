@@ -2,9 +2,21 @@
 
 ## Team Composition
 
+### Planning Phase Agents
+
 | Agent | Primary Role | Execution Mode | Managed By | Model |
 |-------|-------------|----------------|------------|-------|
-| **Work Decomposer** | Break micro-plan into atomic UoWs | Standalone | Human | — |
+| **Initial Planner** | Create project foundation and PRD | Standalone | Human | — |
+| **Macro-Level Planner** | Define high-level architecture and workstreams | Standalone | Human | — |
+| **Meso-Level Planner** | Design detailed architecture and technical decisions | Standalone | Human | — |
+| **Micro-Level Planner** | Create comprehensive implementation plan with WBS | Standalone | Human | — |
+| **WS Micro-Level Planner** | Create detailed workstream-specific implementation specs | Standalone | Human | — |
+
+### Implementation Phase Agents
+
+| Agent | Primary Role | Execution Mode | Managed By | Model |
+|-------|-------------|----------------|------------|-------|
+| **Work Decomposer** | Break workstream micro-plan into atomic UoWs | Standalone | Human | — |
 | **Workstream Orchestrator (W-O)** | Coordinate entire workstream, spawn UOWOs | Autonomous | Human | Sonnet |
 | **Unit-of-Work Orchestrator (UOWO)** | Execute single UoW lifecycle, manage subagents | Subagent | W-O | Sonnet |
 | **Work Assigner** | Select and assign UoWs to SE | Subagent | UOWO | Haiku |
@@ -13,20 +25,51 @@
 | **QA Engineer** | Validate functionality and write tests | Subagent | UOWO | Haiku |
 | **DevOps** | Deploy, monitor, maintain CI/CD | Subagent | UOWO | Haiku |
 
-## Workflow Diagram
+## Complete Workflow: Planning Through Deployment
+
+### High-Level Overview
 
 ```
-┌─────────────────┐
-│  Micro-Level    │
-│     Plan        │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Work Decomposer │ ──── Produces: UoW Decomposition JSON
-└────────┬────────┘
-         │
-         ▼
+PLANNING PHASE (Strategic → Tactical)
+================================
+┌────────────────────┐
+│ Initial Planner    │ ──── PRD, Project Structure, Research Plan
+└──────────┬─────────┘
+           │
+           ▼
+┌────────────────────┐
+│ Macro-Level        │ ──── Workstream Breakdown (W1-W10), Dependencies
+│ Planner            │
+└──────────┬─────────┘
+           │
+           ▼
+┌────────────────────┐
+│ Meso-Level         │ ──── Architecture, Tech Stack, Interface Contracts
+│ Planner            │
+└──────────┬─────────┘
+           │
+           ▼
+┌────────────────────┐
+│ Micro-Level        │ ──── WBS with Tasks, Timelines, Overall Plan
+│ Planner            │
+└──────────┬─────────┘
+           │
+           ▼
+┌────────────────────┐
+│ WS Micro-Level     │ ──── Detailed workstream specs with complete
+│ Planner            │      interfaces, data models, test requirements
+└──────────┬─────────┘      (one per workstream)
+           │
+           │
+IMPLEMENTATION PHASE (Execution)
+================================
+           │
+           ▼
+┌────────────────────┐
+│ Work Decomposer    │ ──── Produces: UoW Decomposition JSON (atomic units)
+└──────────┬─────────┘
+           │
+           ▼
 ┌───────────────────────────────────────────────────────────┐
 │           WORKSTREAM ORCHESTRATOR (W-O)                    │
 │                     [Sonnet]                               │
@@ -327,23 +370,294 @@ W-O creates formal escalation reports for human review when workstream progress 
 
 ## Agent Prompt Files
 
+### Planning Phase Prompts
+
+| Agent | Prompt Location | Execution Mode | Purpose |
+|-------|----------------|----------------|---------|
+| Initial Planner | `agent-prompts/planning/00-Initial-Planner-Setup-Prompt.md` | Standalone (run once) | Create PRD, project structure, research framework |
+| Macro-Level Planner | `agent-prompts/planning/01-Macro-Level-Prompt.md` | Standalone (run once) | Define workstream breakdown (W1-W10) and dependencies |
+| Meso-Level Planner | `agent-prompts/planning/02-Meso-Level-Prompt.md` | Standalone (run once) | Design architecture, tech stack, interface contracts |
+| Micro-Level Planner | `agent-prompts/planning/03-Micro-Level-Prompt.md` | Standalone (run once) | Create comprehensive WBS with tasks and timeline |
+| WS Micro-Level Planner | `agent-prompts/implementation/00-WS-Micro-Level-Planner-Agent.md` | Standalone (run per workstream) | Create detailed workstream specifications |
+
+### Implementation Phase Prompts
+
 | Agent | Prompt Location | Execution Mode | Model |
 |-------|----------------|----------------|-------|
-| Workstream Orchestrator (W-O) | `agent-prompts/00-Workstream-Orchestrator-Agent.md` | Autonomous coordinator | Sonnet |
-| Unit-of-Work Orchestrator (UOWO) | `agent-prompts/00-Orchestrator-Agent.md` | Subagent (spawned by W-O) | Sonnet |
-| Work Decomposer | `agent-prompts/01-Work-Decomposer-Agent.md` | Standalone (run once per workstream) | — |
-| Work Assigner | `agent-prompts/02-Work-Assigner-Agent.md` | Subagent (spawned by UOWO) | Haiku |
-| Software Engineer | `agent-prompts/03-Software-Engineer-Agent.md` | Subagent (spawned by UOWO) | Haiku |
-| Code Reviewer | `agent-prompts/04-Code-Reviewer-Agent.md` | Subagent (spawned by UOWO) | Haiku |
-| QA Engineer | `agent-prompts/05-QA-Engineer-Agent.md` | Subagent (spawned by UOWO) | Haiku |
-| DevOps | `agent-prompts/06-DevOps-Agent.md` | Subagent (spawned by UOWO) | Haiku |
+| Work Decomposer | `agent-prompts/implementation/01-Work-Decomposer-Agent.md` | Standalone (run per workstream) | — |
+| Workstream Orchestrator (W-O) | `agent-prompts/implementation/00-Workstream-Orchestrator-Agent.md` | Autonomous coordinator | Sonnet |
+| Unit-of-Work Orchestrator (UOWO) | `agent-prompts/implementation/00-Orchestrator-Agent.md` | Subagent (spawned by W-O) | Sonnet |
+| Work Assigner | `agent-prompts/implementation/02-Work-Assigner-Agent.md` | Subagent (spawned by UOWO) | Haiku |
+| Software Engineer | `agent-prompts/implementation/03-Software-Engineer-Agent.md` | Subagent (spawned by UOWO) | Haiku |
+| Code Reviewer | `agent-prompts/implementation/04-Code-Reviewer-Agent.md` | Subagent (spawned by UOWO) | Haiku |
+| QA Engineer | `agent-prompts/implementation/05-QA-Engineer-Agent.md` | Subagent (spawned by UOWO) | Haiku |
+| DevOps | `agent-prompts/implementation/06-DevOps-Agent.md` | Subagent (spawned by UOWO) | Haiku |
 
 ### Usage Pattern
 
-1. **Human** runs **Work Decomposer (01)** with micro-level plan → produces decomposition JSON
-2. **Human** starts **Workstream Orchestrator (W-O)** with workstream ID → autonomous execution begins
-3. **W-O** spawns **UOWO** agents for each ready UoW (respecting dependencies)
-4. **UOWO** spawns subagents **02-06** in sequence for the assigned UoW
-5. **UOWO** returns completion status to **W-O**
-6. **W-O** continues until all UoWs complete or workstream is blocked
-7. **W-O** escalates to **Human** only when all progress paths are blocked
+**Planning Phase (Strategic → Tactical):**
+
+1. **Human** runs **Initial Planner** → produces PRD, project structure, research plan
+2. **Human** runs **Macro-Level Planner** with PRD → produces workstream breakdown (W1-W10) with dependencies
+3. **Human** runs **Meso-Level Planner** with macro plan → produces architecture, tech stack, interface contracts
+4. **Human** runs **Micro-Level Planner** with meso plan → produces comprehensive WBS with tasks and timeline
+5. **Human** runs **WS Micro-Level Planner** for each workstream → produces detailed specifications with interfaces, data models, test requirements
+
+**Implementation Phase (Execution):**
+
+6. **Human** runs **Work Decomposer (01)** with workstream micro-plan → produces decomposition JSON with atomic UoWs
+7. **Human** starts **Workstream Orchestrator (W-O)** with workstream ID → autonomous execution begins
+8. **W-O** spawns **UOWO** agents for each ready UoW (respecting dependencies)
+9. **UOWO** spawns subagents **02-06** in sequence for the assigned UoW
+10. **UOWO** returns completion status to **W-O**
+11. **W-O** continues until all UoWs complete or workstream is blocked
+12. **W-O** escalates to **Human** only when all progress paths are blocked
+
+---
+
+## Complete Project Example: Planning Through Deployment
+
+This example shows the complete flow from initial planning through production deployment for a video sharing app (TruParent).
+
+### Planning Phase: Strategic to Tactical
+
+```
+STEP 1: Initial Planner
+========================
+Input:  Project concept ("Video sharing app for parents")
+Output: - PRD with features, constraints, success metrics
+        - Project structure (repositories: backend/, mobile/, docs/)
+        - Research framework
+
+STEP 2: Macro-Level Planner
+============================
+Input:  PRD
+Output: - 10 workstreams with dependencies:
+          W1: Foundation & Auth (no deps)
+          W2: Video Upload (depends on W1)
+          W3: Video Processing (depends on W2)
+          W4: Credits System (depends on W1)
+          W5: User Profile (depends on W1)
+          ...
+        - High-level architecture diagram
+        - Deployment architecture
+
+STEP 3: Meso-Level Planner
+===========================
+Input:  PRD + Macro Plan
+Output: - Detailed architecture:
+          Backend: Go with Chi router, PostgreSQL, Supabase auth
+          Frontend: Flutter with BLoC pattern, Riverpod DI
+          Infrastructure: Fly.io, S3, CloudFront
+        - Complete API contract definitions
+        - Database schema overview
+        - Technology stack rationale
+
+STEP 4: Micro-Level Planner
+============================
+Input:  PRD + Macro + Meso Plans
+Output: - Comprehensive WBS:
+          W1: 6 tasks (Backend scaffold, DB setup, Flutter scaffold, ...)
+          W2: 8 tasks (Video upload UI, S3 integration, ...)
+          ...
+        - Timeline: 12 weeks total
+        - Milestones: W1 (week 2), W2 (week 4), ...
+        - Resource allocation
+
+STEP 5: WS Micro-Level Planner (for W1: Foundation & Auth)
+===========================================================
+Input:  PRD + Macro + Meso + Micro Plans + W1 scope
+Output: - Detailed W1 specification (50+ pages):
+        
+        Module: Backend Auth
+        ├─ Interface: AuthRepository with complete method signatures
+        ├─ Data Model: User entity with JSON serialization
+        ├─ Database Schema: users table with RLS policies
+        ├─ API Endpoints: POST /v1/auth/signin with request/response
+        ├─ Error Handling: AuthFailure types with recovery strategies
+        ├─ Test Requirements: 15 unit tests, 5 integration tests
+        └─ Success Criteria: Auth flow completes in <3s, tokens secure
+        
+        Module: Flutter Auth
+        ├─ BLoC: AuthBloc with events/states/transitions
+        ├─ Repository: AuthRepository interface
+        ├─ Data Source: SupabaseAuthDataSource implementation
+        ├─ UI: LoginScreen with Apple/Google buttons
+        ├─ Test Requirements: 20 unit tests, 3 integration tests
+        └─ Success Criteria: Sign-in works on iOS/Android
+        
+        (Complete specs for all 6 W1 tasks)
+```
+
+### Implementation Phase: Execution
+
+```
+STEP 6: Work Decomposer (for W1)
+=================================
+Input:  W1-micro-level-plan.md (detailed specifications)
+Output: Work-Decomposer-Output.md (JSON) with 7 atomic UoWs:
+        
+        U01: Backend scaffolding
+        ├─ Files: main.go, middleware/logger.go, routes/health.go
+        ├─ LOC: ~80
+        ├─ Dependencies: none
+        └─ Success: Health endpoint returns 200
+        
+        U02: Database setup
+        ├─ Files: db/connection.go, migrations/001_users.sql
+        ├─ LOC: ~100
+        ├─ Dependencies: U01
+        └─ Success: Connection pool works, migrations run
+        
+        U03: Flutter app structure
+        ├─ Files: main.dart, app.dart, router.dart, injection.dart
+        ├─ LOC: ~120
+        ├─ Dependencies: none
+        └─ Success: App launches, routing works, DI configured
+        
+        U04: Supabase auth datasource
+        ├─ Files: auth_datasource.dart, auth_repository.dart
+        ├─ LOC: ~150
+        ├─ Dependencies: U03
+        └─ Success: Sign-in with Apple/Google works
+        
+        U05: Auth BLoC + UI
+        ├─ Files: auth_bloc.dart, login_screen.dart
+        ├─ LOC: ~180
+        ├─ Dependencies: U04
+        └─ Success: UI shows login, handles auth state
+        
+        U06: JWT middleware + user sync
+        ├─ Files: middleware/auth.go, handlers/users.go
+        ├─ LOC: ~130
+        ├─ Dependencies: U02
+        └─ Success: JWT validates, user record created
+        
+        U07: Integration tests
+        ├─ Files: integration_test/auth_test.dart
+        ├─ LOC: ~90
+        ├─ Dependencies: U05, U06
+        └─ Success: End-to-end auth flow passes
+
+STEP 7: Workstream Orchestrator (W-O) for W1
+=============================================
+Input:  Work-Decomposer-Output.md (7 UoWs)
+Action: 
+  1. Builds dependency graph
+  2. Identifies U01, U03 ready (no dependencies, different tracks)
+  3. Spawns UOWO for U01 and U03 in parallel
+
+STEP 8: UOWO for U01 (Backend Scaffolding)
+===========================================
+Spawns subagents in sequence:
+
+  1. Work Assigner
+     ├─ Reads: Decomposition JSON, selects U01
+     ├─ Creates: assignments/UoW-U01-Assignment.md
+     │   ├─ Task: Set up Go project with Chi router
+     │   ├─ Files: main.go, middleware/logger.go, routes/health.go
+     │   ├─ Success: Health endpoint returns {"status":"ok"}
+     │   └─ Commands: go test ./..., go build
+     └─ Returns: assignment_file_path + status: ready
+  
+  2. Software Engineer
+     ├─ Reads: Assignment
+     ├─ Creates files:
+     │   ├─ main.go (Chi router setup, logger middleware)
+     │   ├─ middleware/logger.go (request logging)
+     │   ├─ routes/health.go (GET /health endpoint)
+     │   └─ routes/health_test.go (unit test)
+     ├─ Runs: go test ./... (PASS), go build (SUCCESS)
+     ├─ Creates: diffs/U01.diff, logs/SE-Log-U01.md
+     └─ Returns: status: ready_for_review
+  
+  3. Code Reviewer
+     ├─ Reads: Assignment, diff, SE log
+     ├─ Reviews:
+     │   ├─ Correctness: Health endpoint works ✓
+     │   ├─ Standards: Go idioms followed ✓
+     │   ├─ Security: No secrets ✓
+     │   └─ Tests: Coverage adequate ✓
+     ├─ Decision: APPROVED
+     ├─ Creates: reviews/Review-U01.md
+     └─ Returns: status: approved
+  
+  4. QA Engineer
+     ├─ Reads: Assignment, review report
+     ├─ Tests:
+     │   ├─ curl http://localhost:8080/health → 200 OK ✓
+     │   ├─ Response body: {"status":"ok"} ✓
+     │   └─ Logs show request ✓
+     ├─ Decision: APPROVED
+     ├─ Creates: qa/QA-Report-U01.md
+     └─ Returns: status: done
+  
+  5. DevOps
+     ├─ Reads: QA report
+     ├─ Deploys:
+     │   ├─ Builds Docker image
+     │   ├─ Pushes to registry
+     │   ├─ Deploys to Fly.io staging
+     │   └─ Health check: https://staging.api.truparent.com/health → 200 ✓
+     ├─ Creates: deployments/Deploy-U01.md
+     └─ Returns: status: success
+
+UOWO returns to W-O: status: success, unit_id: U01, final_state: done
+
+STEP 9: W-O continues
+======================
+├─ U01 done → U02 now ready (depends on U01)
+├─ U03 done (parallel) → U04 now ready (depends on U03)
+├─ Spawns: UOWO for U02, UOWO for U04 (parallel)
+├─ U02 done → U06 ready
+├─ U04 done → U05 ready
+├─ Spawns: UOWO for U05, UOWO for U06 (parallel)
+├─ U05, U06 done → U07 ready
+├─ Spawns: UOWO for U07
+├─ U07 done → All 7 UoWs complete
+└─ Generates: Workstream W1 Completion Report
+    ├─ Status: COMPLETE
+    ├─ Duration: 4 hours 23 minutes
+    ├─ Statistics: 0 rejections, 0 blockers
+    └─ Next: W2 and W4 now ready (depend only on W1)
+
+STEP 10: Next Workstream
+=========================
+Human reviews W1 completion → starts W-O for W2 (Video Upload)
+└─ Repeat steps 6-9 for W2...
+    └─ Then W3, W4, W5, ... W10
+        └─ Full project complete!
+```
+
+### Key Takeaways
+
+1. **Planning Phase** (Steps 1-5): Human-driven, progressively detailed
+   - Each planner adds one level of detail
+   - WS Micro-Level Planner creates implementation-ready specs
+   - Output: Complete specifications with interfaces, schemas, tests
+
+2. **Implementation Phase** (Steps 6-10): Agent-driven, highly automated
+   - Work Decomposer creates atomic, implementable units
+   - W-O manages workstream-level coordination and parallelization
+   - UOWO manages single UoW lifecycle with quality gates
+   - Subagents execute specific responsibilities (assign, code, review, test, deploy)
+
+3. **Orchestration Hierarchy**:
+   - **Human**: Runs planners, starts W-O, monitors progress
+   - **W-O**: Manages workstream, spawns UOWOs, handles dependencies
+   - **UOWO**: Manages UoW lifecycle, spawns subagents, handles rejections
+   - **Subagents**: Execute specific tasks, return results to UOWO
+
+4. **Quality Gates**: Every UoW passes through:
+   - Assignment (clear scope)
+   - Implementation (working code)
+   - Code Review (quality standards)
+   - QA Testing (functional validation)
+   - Deployment (production-ready)
+
+5. **Progress Tracking**: Continuous visibility at multiple levels:
+   - Project: 10 workstreams, overall completion %
+   - Workstream: N UoWs, dependency graph, blockers
+   - UoW: Status, artifacts, history
+
+This complete flow ensures systematic progression from idea to production while maintaining quality, testability, and traceability throughout.
