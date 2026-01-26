@@ -42,7 +42,7 @@ All repo paths are expressed relative to the `agent-prompts/` directory:
 
 ### Reference Files
 Progress command mapping is defined by:
-- `../agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md` 
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md` 
 
 ---
 
@@ -96,7 +96,7 @@ If any fail, mark blocked and stop.
 For CHG workstreams, all progress updates MUST use the CHG scripts (not the W* scripts). 
 
 The exact commands and transition mapping are referenced from:
-- `../agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md` 
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md` 
 
 ### Step 3 — Start Workstream Orchestrator (W‑O) With CHG Inputs
 Spawn the Workstream Orchestrator with:
@@ -118,7 +118,7 @@ W‑O responsibilities remain:
   "subagent_type": "general-purpose",
   "model": "sonnet",
   "description": "W-O for {CHANGE-ID}",
-  "prompt": "You are the Workstream Orchestrator for workstream {CHANGE-ID}. Use decomposition at ../Planning/Changes/{CHANGE-ID}/04-work-decomposer-output.md and progress at ../progress-tracking/{CHANGE-ID}-progress.md. Use CHG progress scripts per ../agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md. Write orchestration logs under {log_root}/orchestration/."
+  "prompt": "You are the Workstream Orchestrator for workstream {CHANGE-ID}. Use decomposition at ../Planning/Changes/{CHANGE-ID}/04-work-decomposer-output.md and progress at ../progress-tracking/{CHANGE-ID}-progress.md. Use CHG progress scripts per /Users/mckerracher.joshua/Code/agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md. Write orchestration logs under {log_root}/orchestration/."
 }
 ````
 
@@ -187,7 +187,7 @@ When kickoff is successfully initiated, return:
     "decomposition": "../Planning/Changes/CHG-.../04-work-decomposer-output.md",
     "progress": "../progress-tracking/CHG-...-progress.md",
     "project_progress": "../progress-tracking/project-progress.md",
-    "chg_commands_reference": "../agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md"
+    "chg_commands_reference": "/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md"
   },
   "log_root": "/abs/path/to/.../CHG-...",
   "orchestration_logs": {

@@ -40,15 +40,15 @@ Do not emit repo paths like `Planning/...` without the leading `../`.
 
 ### Agent Reference Files
 Shared reference files live under:
-- `../agent-prompts/reference-files/`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/`
 
 Use these paths when referencing standards/templates:
-- `../agent-prompts/reference-files/Code-Standards.md`
-- `../agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
-- `../agent-prompts/reference-files/Directory-And-File-Naming-Standards.md`
-- `../agent-prompts/reference-files/File-Locations.md`
-- `../agent-prompts/reference-files/Files-to-Keep-Updated.md`
-- `../agent-prompts/reference-files/SE-Agent-Log-Template.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Code-Standards.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Directory-And-File-Naming-Standards.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/File-Locations.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Files-to-Keep-Updated.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/SE-Agent-Log-Template.md`
 
 ---
 

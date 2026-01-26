@@ -23,8 +23,8 @@ This prompt is designed for **incremental work** only. If the change is actually
 7. **Standards & pitfalls apply** (do not scope creep; no secrets/PII; deterministic tests; small diffs; avoid new deps unless required).
 
 Reference files:
-- `../agent-prompts/reference-files/Code-Standards.md`
-- `../agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Code-Standards.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
 
 ---
 
@@ -43,15 +43,15 @@ Do **not** emit repo paths like `Planning/...` or `backend/...` without the lead
 
 ### Agent Reference Files
 Shared reference files live under:
-- `../agent-prompts/reference-files/`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/`
 
 Use these paths when referencing standards/templates:
-- `../agent-prompts/reference-files/Code-Standards.md`
-- `../agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
-- `../agent-prompts/reference-files/Directory-And-File-Naming-Standards.md`
-- `../agent-prompts/reference-files/File-Locations.md`
-- `../agent-prompts/reference-files/Files-to-Keep-Updated.md`
-- `../agent-prompts/reference-files/SE-Agent-Log-Template.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Code-Standards.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Directory-And-File-Naming-Standards.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/File-Locations.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Files-to-Keep-Updated.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/SE-Agent-Log-Template.md`
 
 ---
 

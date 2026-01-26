@@ -34,9 +34,9 @@ All repo paths are expressed relative to `agent-prompts/`:
 - Project progress: `../progress-tracking/project-progress.md` 
 
 ### Agent Reference Files
-- `../agent-prompts/reference-files/Files-to-Keep-Updated.md` 
-- `../agent-prompts/reference-files/Code-Standards.md` 
-- `../agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md` 
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Files-to-Keep-Updated.md` 
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Code-Standards.md` 
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md` 
 
 ---
 

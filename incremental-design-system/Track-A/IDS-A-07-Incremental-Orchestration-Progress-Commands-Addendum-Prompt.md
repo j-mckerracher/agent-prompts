@@ -68,7 +68,7 @@ All incremental artifacts must be logged under `{log_root}/{CHANGE-ID}/...` and 
 
 ### Step 5 — Persist Addendum
 Write the addendum to:
-- `../agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md`
 
 This makes it available as a shared reference file used across prompts. 
 
@@ -122,7 +122,7 @@ Return JSON:
 ```json
 {
   "status": "ready|blocked",
-  "artifact": "../agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md",
+  "artifact": "/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Progress-Tracking-CHG-Commands.md",
   "option": "B",
   "blocker": null
 }

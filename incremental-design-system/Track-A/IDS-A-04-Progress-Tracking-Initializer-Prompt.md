@@ -38,7 +38,7 @@ All repo paths are expressed **relative to the `agent-prompts/` directory**.
 
 ### Agent Reference Files
 Reference files live under:
-- `../agent-prompts/reference-files/`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/`
 
 ---
 

@@ -54,8 +54,8 @@ This prompt is valid **only** for incremental work.
    - deterministic tests  
 
 Reference:
-- `../agent-prompts/reference-files/Code-Standards.md`
-- `../agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Code-Standards.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
 
 ---
 
@@ -77,7 +77,7 @@ Shared reference files live under:
 
 ```
 
-../agent-prompts/reference-files/
+/Users/mckerracher.joshua/Code/agent-prompts/reference-files/
 
 ```
 

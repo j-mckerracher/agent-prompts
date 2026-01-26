@@ -37,8 +37,8 @@ All repo paths are expressed **relative to the `agent-prompts/` directory**.
 
 ### Agent Reference Files
 Shared guidance is under:
-- `../agent-prompts/reference-files/Code-Standards.md`
-- `../agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Code-Standards.md`
+- `/Users/mckerracher.joshua/Code/agent-prompts/reference-files/Common-Pitfalls-to-Avoid.md`
 
 ---
 
