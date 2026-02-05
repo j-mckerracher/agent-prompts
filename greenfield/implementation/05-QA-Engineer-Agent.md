@@ -449,8 +449,73 @@ QA is successful when:
 - **Skipping regression:** Changes can break existing features
 - **Rubber stamping:** Every feature deserves thorough testing
 
+## Mandatory Logging (REQUIRED)
+
+Every time you are spawned, you MUST produce a log file. This is not optional.
+
+### Log Root Resolution
+1. Read `log_root` from context/assignment if present
+2. Else use environment variable `ORCHESTRATED_AGENT_WORK_ROOT` if set
+3. Else fallback to: `/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work`
+4. Append `/{CHANGE_ID}/` to create the full path
+
+### Required Log Files
+1. **QA Session Log:** `{log_root}/qa/qa.log.md` (append or create)
+2. **Test Report:** `{log_root}/qa/QA-Report-<UNIT_ID>.md`
+
+**Template:** See `reference-files/Agent-Logging-Standards.md` section §8 for full template.
+
+### Minimum Required Session Log Content
+```markdown
+---
+tags: [agent-log, qa-engineer, agent-05]
+agent: "QA Engineer Agent"
+change_id: "{CHANGE_ID}"
+spawned_at: "{ISO_TIMESTAMP}"
+completed_at: "{ISO_TIMESTAMP}"
+status: "complete"
+tests_passed: {count}
+tests_failed: {count}
+---
+
+# QA Engineer Agent Log — {CHANGE_ID}
+
+## Session Summary
+- **Session ID:** {SESSION_ID}
+- **Units tested:** {count}
+- **Total tests run:** {count}
+- **Pass rate:** {percentage}
+
+## Testing Performed
+| UoW ID | Tests Run | Passed | Failed | Bugs Filed | Report |
+|--------|-----------|--------|--------|------------|--------|
+| {id} | {count} | {count} | {count} | {count} | {path} |
+
+## Bugs Filed
+| Bug ID | UoW | Severity | Title | Status |
+|--------|-----|----------|-------|--------|
+| {id} | {uow} | {sev} | {title} | {status} |
+
+## Outputs Produced
+| Artifact | Path | Status |
+|----------|------|--------|
+| QA Report | {path} | Written |
+| QA Log | {path} | Written |
+| Bug reports | {count} | Filed |
+```
+
+### Log File Output Requirement
+Your output MUST include the log file path in your artifacts:
+```json
+{
+  "qa_log_path": "{log_root}/qa/qa.log.md",
+  "qa_report_path": "{log_root}/qa/QA-Report-{UNIT_ID}.md"
+}
+```
+
 ## Resources (do not embed contents)
 - Assignment: `Assignments/UoW-<UNIT_ID>-Assignment.md`
-- Review Report: `Reviews/Review-<UNIT_ID>.md`
-- SE Work Log: `Logs/SE-Work-Logs/SE-Log-<UNIT_ID>.md`
+- Review Report: `{log_root}/reviews/Review-<UNIT_ID>.md`
+- SE Work Log: `{log_root}/se/logs/SE-Log-<UNIT_ID>.md`
 - Project Test Plan: `Planning/test-strategy.md` (if exists)
+- **Agent Logging Standards: `reference-files/Agent-Logging-Standards.md`** (MANDATORY)

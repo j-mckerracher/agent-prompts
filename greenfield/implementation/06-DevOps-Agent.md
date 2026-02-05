@@ -416,8 +416,76 @@ Configure monitoring for:
 - Transaction volume
 - Revenue impact (if applicable)
 
+## Mandatory Logging (REQUIRED)
+
+Every time you are spawned, you MUST produce a log file. This is not optional.
+
+### Log Root Resolution
+1. Read `log_root` from context/assignment if present
+2. Else use environment variable `ORCHESTRATED_AGENT_WORK_ROOT` if set
+3. Else fallback to: `/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work`
+4. Append `/{CHANGE_ID}/` to create the full path
+
+### Required Log Files
+1. **DevOps Session Log:** `{log_root}/devops/devops.log.md` (append or create)
+2. **Deployment Report:** `{log_root}/devops/Deployment-Report-<UNIT_ID>.md`
+
+**Template:** See `reference-files/Agent-Logging-Standards.md` section §9 for full template.
+
+### Minimum Required Log Content
+```markdown
+---
+tags: [agent-log, devops, agent-06]
+agent: "DevOps Agent"
+change_id: "{CHANGE_ID}"
+spawned_at: "{ISO_TIMESTAMP}"
+completed_at: "{ISO_TIMESTAMP}"
+status: "deployed|failed|rolled_back"
+deployments: [{UNIT_IDS}]
+---
+
+# DevOps Agent Log — {CHANGE_ID}
+
+## Session Summary
+- **Session ID:** {SESSION_ID}
+- **Deployments performed:** {count}
+- **Rollbacks:** {count}
+- **Status:** {overall_status}
+
+## Deployments
+| UoW ID | Environment | Status | Duration | Verification |
+|--------|-------------|--------|----------|--------------|
+| U{N} | {env} | Success/Failed | {duration} | Passed/Failed |
+
+## Pipeline Executions
+| Pipeline | Triggered | Status | Duration | Logs |
+|----------|-----------|--------|----------|------|
+| {name} | {time} | {status} | {duration} | {link} |
+
+## Rollbacks
+| UoW ID | Reason | Previous Version | Status |
+|--------|--------|------------------|--------|
+| {id} | {reason} | {version} | {status} |
+
+## Outputs Produced
+| Artifact | Path | Status |
+|----------|------|--------|
+| Deployment Report | {path} | Written |
+| DevOps Log | {path} | Written |
+```
+
+### Log File Output Requirement
+Your output MUST include the log file path:
+```json
+{
+  "devops_log_path": "{log_root}/devops/devops.log.md",
+  "deployment_report_path": "{log_root}/devops/Deployment-Report-{UNIT_ID}.md"
+}
+```
+
 ## Resources (do not embed contents)
-- QA Report: `QA/QA-Report-<UNIT_ID>.md`
+- QA Report: `{log_root}/qa/QA-Report-<UNIT_ID>.md`
 - Meso-Level Plan: `Planning/meso-level-plan.md` (deployment architecture)
 - Infrastructure Config: `infrastructure/` (if exists)
 - CI/CD Config: `.github/workflows/` or equivalent
+- **Agent Logging Standards: `reference-files/Agent-Logging-Standards.md`** (MANDATORY)

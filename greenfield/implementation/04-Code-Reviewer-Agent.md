@@ -356,8 +356,66 @@ A review is successful when:
 - **Perfectionism:** Good enough for requirements is good enough
 - **Personal preference:** Follow standards, not taste
 
+## Mandatory Logging (REQUIRED)
+
+Every time you are spawned, you MUST produce a log file. This is not optional.
+
+### Log Root Resolution
+1. Read `log_root` from context/assignment if present
+2. Else use environment variable `ORCHESTRATED_AGENT_WORK_ROOT` if set
+3. Else fallback to: `/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work`
+4. Append `/{CHANGE_ID}/` to create the full path
+
+### Required Log Files
+1. **Session Log:** `{log_root}/reviews/reviewer.log.md` (append to existing or create)
+2. **Per-UoW Review Report:** `{log_root}/reviews/Review-<UNIT_ID>.md`
+
+**Template:** See `reference-files/Agent-Logging-Standards.md` section §7 for full template.
+
+### Minimum Required Session Log Content
+```markdown
+---
+tags: [agent-log, code-reviewer, agent-04]
+agent: "Code Reviewer Agent"
+change_id: "{CHANGE_ID}"
+spawned_at: "{ISO_TIMESTAMP}"
+completed_at: "{ISO_TIMESTAMP}"
+status: "complete"
+reviews_performed: [{UNIT_IDS}]
+---
+
+# Code Reviewer Agent Log — {CHANGE_ID}
+
+## Session Summary
+- **Session ID:** {SESSION_ID}
+- **Reviews performed:** {count}
+- **Approved:** {count}
+- **Rejected:** {count}
+
+## Reviews Performed
+| UoW ID | Decision | Duration | Issues Found | Report Path |
+|--------|----------|----------|--------------|-------------|
+| {id} | Approved/Rejected | {min} | {count} | {path} |
+
+## Outputs Produced
+| Artifact | Path | Status |
+|----------|------|--------|
+| Review Report | {path} | Written |
+| Reviewer Log | {path} | Written |
+```
+
+### Log File Output Requirement
+Your output MUST include the log file path in your artifacts:
+```json
+{
+  "reviewer_log_path": "{log_root}/reviews/reviewer.log.md",
+  "review_report_path": "{log_root}/reviews/Review-{UNIT_ID}.md"
+}
+```
+
 ## Resources (do not embed contents)
 - Assignment: `Assignments/UoW-<UNIT_ID>-Assignment.md`
-- SE Work Log: `Logs/SE-Work-Logs/SE-Log-<UNIT_ID>.md`
-- Code Standards: `04-Agent-Reference-Files/Code-Standards.md`
-- Common Pitfalls: `04-Agent-Reference-Files/Common-Pitfalls-to-Avoid.md`
+- SE Work Log: `{log_root}/se/logs/SE-Log-<UNIT_ID>.md`
+- Code Standards: `reference-files/Code-Standards.md`
+- Common Pitfalls: `reference-files/Common-Pitfalls-to-Avoid.md`
+- **Agent Logging Standards: `reference-files/Agent-Logging-Standards.md`** (MANDATORY)

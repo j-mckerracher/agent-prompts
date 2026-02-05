@@ -254,8 +254,76 @@ Upon completion:
 2. Notify Work Assigner that decomposition is ready.
 3. Work Assigner will select and assign UoWs per its selection heuristics.
 
+## Mandatory Logging (REQUIRED)
+
+Every time you are spawned, you MUST produce a log file. This is not optional.
+
+### Log Root Resolution
+1. Read `log_root` from invocation context if present
+2. Else use environment variable `ORCHESTRATED_AGENT_WORK_ROOT` if set
+3. Else fallback to: `/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work`
+4. Append `/{CHANGE_ID}/` to create the full path
+
+### Required Log File
+**Path:** `{log_root}/decomposition/decomposer.log.md`
+
+**Template:** See `reference-files/Agent-Logging-Standards.md` section §4 for full template.
+
+### Minimum Required Log Content
+```markdown
+---
+tags: [agent-log, work-decomposer, agent-01]
+agent: "Work Decomposer Agent"
+change_id: "{CHANGE_ID}"
+spawned_at: "{ISO_TIMESTAMP}"
+completed_at: "{ISO_TIMESTAMP}"
+status: "complete|blocked|escalated"
+uows_created: {count}
+workstreams_created: {count}
+---
+
+# Work Decomposer Agent Log — {CHANGE_ID}
+
+## Session Summary
+- **Session ID:** {SESSION_ID}
+- **Input:** {micro-level plan path}
+- **Total UoWs created:** {count}
+- **Total workstreams:** {count}
+- **Total estimated tokens:** {tokens}
+
+## Decomposition Summary
+| Workstream | UoW Count | Est. Tokens | Critical Path |
+|------------|-----------|-------------|---------------|
+| W{N} | {count} | {tokens} | Yes/No |
+
+## UoWs Created
+| ID | Title | Workstream | Dependencies | Est. Tokens |
+|----|-------|------------|--------------|-------------|
+| U{N} | {title} | W{N} | [{deps}] | {tokens} |
+
+## Escalations
+| Issue | Severity | Resolution |
+|-------|----------|------------|
+| {issue} | {sev} | {resolution} |
+
+## Outputs Produced
+| Artifact | Path | Status |
+|----------|------|--------|
+| Decomposition | Planning/Work-Decomposer-Output.md | Written |
+| Decomposer Log | {path} | Written |
+```
+
+### Log File Output Requirement
+Your output MUST include the log file path:
+```json
+{
+  "decomposer_log_path": "{log_root}/decomposition/decomposer.log.md"
+}
+```
+
 ## Resources (do not embed contents)
-- Code Standards: `04-Agent-Reference-Files/Code-Standards.md`
-- Common Pitfalls: `04-Agent-Reference-Files/Common-Pitfalls-to-Avoid.md`
+- Code Standards: `reference-files/Code-Standards.md`
+- Common Pitfalls: `reference-files/Common-Pitfalls-to-Avoid.md`
 - Micro-Level Plan: `Planning/micro-level-plan.md`
 - Meso-Level Plan: `Planning/meso-level-plan.md` (for architectural context)
+- **Agent Logging Standards: `reference-files/Agent-Logging-Standards.md`** (MANDATORY)

@@ -1,0 +1,72 @@
+{
+  "learnings": [
+    {
+      "id": "L001",
+      "story_id": "4729040",
+      "category": "tooltip",
+      "description": "Tooltips use PrimeNG v19's pTooltip directive with tooltipPosition attribute",
+      "file_paths": [
+        "libs/pearls/specimen-accessioning/ui/orders-ui/src/lib/components/test-pills/test-pill-common/test-pill-common.component.html",
+        "libs/shared/ui/design-system/src/lib/overlays/tooltip-default.stories.ts"
+      ],
+      "code_pattern": "[pTooltip]=\"receiptToolTip(testIndex())\" tooltipPosition=\"left\"",
+      "created_at": "2026-01-27T22:50:16Z"
+    },
+    {
+      "id": "L002",
+      "story_id": "4729040",
+      "category": "cancelled_by_field",
+      "description": "Cancelled by tooltip is generated in test-pill.component.ts using generateCancelTooltip() method which combines actor, reason, and date",
+      "file_paths": [
+        "libs/pearls/specimen-accessioning/ui/orders-ui/src/lib/components/test-pills/test-pill/test-pill.component.ts"
+      ],
+      "code_pattern": "generateCancelTooltip(actor: string, canceledReason: string, canceledOn: string): string { return `Canceled by: ${actor} on ${canceledOn} \\n Reason: ${canceledReason}`; }",
+      "line_numbers": "557-563",
+      "created_at": "2026-01-27T22:50:16Z"
+    },
+    {
+      "id": "L003",
+      "story_id": "4729040",
+      "category": "receipted_field",
+      "description": "Receipted tooltip is generated in tests.middleware.ts using generateReceiptedTooltip() method which combines receiptedBy and receiptedOnUtc",
+      "file_paths": [
+        "libs/pearls/specimen-accessioning/ui/orders-ui/src/lib/middleware/tests.middleware.ts"
+      ],
+      "code_pattern": "return test.receiptedBy + ' on ' + receiptedDate.toLocaleString();",
+      "line_numbers": "301-314",
+      "created_at": "2026-01-27T22:50:16Z"
+    },
+    {
+      "id": "L004",
+      "story_id": "4729040",
+      "category": "notes_field",
+      "description": "Notes display actor (person ID) in note.component.html using the NoteModel.actor property",
+      "file_paths": [
+        "libs/shared/ui/components/src/lib/notes/notes-container/note/note.component.html",
+        "libs/shared/ui/components/src/lib/notes/notes-container/note/note.component.ts",
+        "libs/shared/data-access/orders-data-access/src/lib/models/noteModel.ts"
+      ],
+      "code_pattern": "<span class=\"note-actor\" data-test-id=\"note-actor\">{{ note()?.actor }}</span>",
+      "created_at": "2026-01-27T22:50:16Z"
+    },
+    {
+      "id": "L005",
+      "story_id": "4729040",
+      "category": "data_model",
+      "description": "Person IDs are stored as string properties: TestModel.canceledBy, TestModel.receiptedBy, NoteModel.actor",
+      "file_paths": [
+        "libs/shared/data-access/orders-data-access/src/lib/models/testModel.ts",
+        "libs/shared/data-access/orders-data-access/src/lib/models/noteModel.ts"
+      ],
+      "created_at": "2026-01-27T22:50:16Z"
+    },
+    {
+      "id": "L006",
+      "story_id": "4729040",
+      "category": "external_url",
+      "description": "Quarterly person lookup URL pattern for linking person IDs",
+      "url_pattern": "https://quarterly.mayo.edu/directoryui/personDetails/{personID}",
+      "created_at": "2026-01-27T22:50:16Z"
+    }
+  ]
+}

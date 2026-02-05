@@ -348,8 +348,87 @@ status: "in_progress"  # in_progress | blocked | ready_for_review | done
 - Build result: <pass/fail>
 ```
 
+## Mandatory Logging (REQUIRED)
+
+Every time you are spawned, you MUST produce a log file. This is not optional.
+
+### Log Root Resolution
+1. Read `log_root` from assignment frontmatter if present
+2. Else use environment variable `ORCHESTRATED_AGENT_WORK_ROOT` if set
+3. Else fallback to: `/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work`
+4. Append `/{CHANGE_ID}/` to create the full path
+
+### Required Log File
+**Path:** `{log_root}/se/logs/SE-Log-<UNIT_ID>.md`
+
+**Template:** See `reference-files/Agent-Logging-Standards.md` section §6 for full template.
+
+### Minimum Required Log Content
+```markdown
+---
+tags: [agent-log, software-engineer, agent-03]
+agent: "Software Engineer Agent"
+change_id: "{CHANGE_ID}"
+unit_id: "{UNIT_ID}"
+workstream_id: "{WORKSTREAM_ID}"
+spawned_at: "{ISO_TIMESTAMP}"
+completed_at: "{ISO_TIMESTAMP}"
+status: "ready_for_review|blocked|escalated"
+is_rework: false|true
+rework_cycle: 0|1|2|3
+---
+
+# SE Agent Log — {UNIT_ID}
+
+## Invocation Context
+- **Spawned by:** {who}
+- **Assignment path:** {path}
+- **Session ID:** {session}
+- **Is rework:** {yes|no}
+
+## Task Summary
+- **Goal:** {goal}
+- **Files modified:** {list}
+- **Success criteria:** {count} items
+
+## Changes Made
+| File | Change Type | LOC Changed | Rationale |
+|------|-------------|-------------|-----------|
+| {path} | Modified | {loc} | {why} |
+
+## Validation Results
+- **Lint:** Pass/Fail
+- **Tests:** Pass/Fail ({count})
+- **Build:** Pass/Fail
+
+## Outputs Produced
+| Artifact | Path | Status |
+|----------|------|--------|
+| Diff | {path} | Written |
+| Test results | {path} | Written |
+| SE Log | {path} | Written |
+
+## Metrics
+- **Total files modified:** {count}
+- **Total LOC changed:** {count}
+- **Constraints satisfied:** ✓/✗
+
+## Handoff
+- **Next agent:** Code Reviewer Agent
+- **Status:** ready_for_review | blocked
+```
+
+### Log File Output Requirement
+Your output MUST include the log file path in your artifacts:
+```json
+{
+  "se_log_path": "{log_root}/se/logs/SE-Log-{UNIT_ID}.md"
+}
+```
+
 ## Resources (do not embed contents)
-- Code Standards: `04-Agent-Reference-Files/Code-Standards.md`
-- Common Pitfalls: `04-Agent-Reference-Files/Common-Pitfalls-to-Avoid.md`
-- SE Log Template: `04-Agent-Reference-Files/SE-Agent-Log-Template.md`
+- Code Standards: `reference-files/Code-Standards.md`
+- Common Pitfalls: `reference-files/Common-Pitfalls-to-Avoid.md`
+- SE Log Template: `reference-files/SE-Agent-Log-Template.md`
+- **Agent Logging Standards: `reference-files/Agent-Logging-Standards.md`** (MANDATORY)
 - Current Assignment: `Assignments/UoW-<UNIT_ID>-Assignment.md`

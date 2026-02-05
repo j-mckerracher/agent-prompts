@@ -1,0 +1,4 @@
+knowledge_root: "/absolute/path/to/repo/sequential-task-decomp-with-eval-optimizer-loop/agent-reference/knowledge/"
+artifact_root: "/absolute/path/to/work/artifacts/"
+obsidian_vault_root: "/absolute/path/to/Obsidian-Vault"
+e2e_tests_root: "/absolute/path/to/e2e-tests-project"

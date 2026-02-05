@@ -1,0 +1,4 @@
+knowledge_root: "/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Agentic-Workflows/sequential-task-decomp-with-eval-optimizer-loop/agent-reference/knowledge/"
+artifact_root: "/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work/"
+obsidian_vault_root: "/Users/mckerracher.joshua/Documents/Obsidian-Vault"
+e2e_tests_root: "/Users/mckerracher.joshua/Code/mcs-products-mono-ui/apps/pearls/rls-specimen-accessioning-e2e"

@@ -363,8 +363,73 @@ An assignment is successful when ALL are true:
 | **Safety** | No secrets; security/privacy constraints explicit |
 | **Reproducibility** | Commands provided; steps are deterministic |
 
+## Mandatory Logging (REQUIRED)
+
+Every time you are spawned, you MUST produce a log file. This is not optional.
+
+### Log Root Resolution
+1. Read `log_root` from invocation context if present
+2. Else use environment variable `ORCHESTRATED_AGENT_WORK_ROOT` if set
+3. Else fallback to: `/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work`
+4. Append `/{CHANGE_ID}/` to create the full path
+
+### Required Log Files
+1. **Assigner Log:** `{log_root}/assignments/assigner.log.md` (append or create)
+2. **Assignment File:** `{log_root}/assignments/UoW-<UNIT_ID>-Assignment.md`
+
+**Template:** See `reference-files/Agent-Logging-Standards.md` section §5 for full template.
+
+### Minimum Required Log Content
+```markdown
+---
+tags: [agent-log, work-assigner, agent-02]
+agent: "Work Assigner Agent"
+change_id: "{CHANGE_ID}"
+spawned_at: "{ISO_TIMESTAMP}"
+completed_at: "{ISO_TIMESTAMP}"
+status: "complete"
+assignments_created: [{UNIT_IDS}]
+---
+
+# Work Assigner Agent Log — {CHANGE_ID}
+
+## Session Summary
+- **Session ID:** {SESSION_ID}
+- **Assignments created this session:** {count}
+- **UoWs assigned:** [{ids}]
+
+## Assignments Created
+| UoW ID | Title | Files Targeted | Est. LOC | Assignment Path |
+|--------|-------|----------------|----------|-----------------|
+| U{N} | {title} | {count} | {loc} | {path} |
+
+## Selection Rationale
+For each assigned UoW, brief rationale for selection order.
+
+## Escalations
+| UoW ID | Issue | Resolution |
+|--------|-------|------------|
+| {id} | {issue} | {resolution} |
+
+## Outputs Produced
+| Artifact | Path | Status |
+|----------|------|--------|
+| Assignment | {path} | Written |
+| Assigner Log | {path} | Written |
+```
+
+### Log File Output Requirement
+Your output MUST include the log file path:
+```json
+{
+  "assigner_log_path": "{log_root}/assignments/assigner.log.md",
+  "assignment_path": "{log_root}/assignments/UoW-{UNIT_ID}-Assignment.md"
+}
+```
+
 ## Resources (do not embed contents)
 - Decomposition: `Planning/Work-Decomposer-Output.md`
-- Code Standards: `04-Agent-Reference-Files/Code-Standards.md`
-- Common Pitfalls: `04-Agent-Reference-Files/Common-Pitfalls-to-Avoid.md`
-- SE Log Template: `04-Agent-Reference-Files/SE-Agent-Log-Template.md`
+- Code Standards: `reference-files/Code-Standards.md`
+- Common Pitfalls: `reference-files/Common-Pitfalls-to-Avoid.md`
+- SE Log Template: `reference-files/SE-Agent-Log-Template.md`
+- **Agent Logging Standards: `reference-files/Agent-Logging-Standards.md`** (MANDATORY)

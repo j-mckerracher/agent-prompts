@@ -668,11 +668,83 @@ Track average time per state:
 Based on current velocity: <date and time>
 ```
 
+## Mandatory Logging (REQUIRED)
+
+Every time you are spawned, you MUST produce a log file. This is not optional.
+
+### Log Root Resolution
+1. Read `log_root` from invocation context if present
+2. Else use environment variable `ORCHESTRATED_AGENT_WORK_ROOT` if set
+3. Else fallback to: `/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work`
+4. Append `/{CHANGE_ID}/` to create the full path
+
+### Required Log Files
+1. **Orchestration Log:** `{log_root}/orchestration/orchestration.log.md`
+2. **Session Entry:** Append session summary to orchestration.log.md on completion
+
+**Template:** See `reference-files/Agent-Logging-Standards.md` section §3 for full template.
+
+### Minimum Required Log Content
+```markdown
+---
+tags: [agent-log, orchestrator, agent-00]
+agent: "Unit-of-Work Orchestrator Agent"
+change_id: "{CHANGE_ID}"
+spawned_at: "{ISO_TIMESTAMP}"
+completed_at: "{ISO_TIMESTAMP}"
+status: "complete|aborted|escalated"
+uows_managed: [{UNIT_IDS}]
+---
+
+# UOWO Session Log — {CHANGE_ID}
+
+## Session Summary
+- **Session ID:** {SESSION_ID}
+- **Spawned by:** Workstream Orchestrator
+- **UoWs managed this session:** {count}
+- **Status at completion:** {status}
+
+## UoW State Transitions
+| Time | UoW ID | From State | To State | Triggered By |
+|------|--------|------------|----------|--------------|
+| {ts} | {id} | {from} | {to} | {agent} |
+
+## Subagent Spawns
+| Time | Agent | UoW | Purpose | Outcome |
+|------|-------|-----|---------|---------|
+| {ts} | {agent} | {id} | {purpose} | {outcome} |
+
+## Rejection Cycles
+| UoW ID | Rejections (CR) | Rejections (QA) | Current Cycle |
+|--------|-----------------|-----------------|---------------|
+| {id} | {count} | {count} | {cycle} |
+
+## Escalations
+| Time | UoW ID | Reason | Resolution |
+|------|--------|--------|------------|
+| {ts} | {id} | {reason} | {resolution} |
+
+## Outputs Produced
+| Artifact | Path | Status |
+|----------|------|--------|
+| Orchestration Log | {path} | Written |
+| Progress updates | {paths} | Updated |
+```
+
+### Log File Output Requirement
+Your return to W-O MUST include the log file path:
+```json
+{
+  "orchestration_log_path": "{log_root}/orchestration/orchestration.log.md"
+}
+```
+
 ## Resources (do not embed contents)
 
 - Decomposition: `Planning/Work-Decomposer-Output.md`
 - Progress Tracking: `progress-tracking/W{N}-progress.md`
 - Project Progress: `progress-tracking/project-progress.md`
 - Subagent Prompts: `agent-prompts/02-*.md` through `agent-prompts/06-*.md`
-- Code Standards: `04-Agent-Reference-Files/Code-Standards.md`
-- Common Pitfalls: `04-Agent-Reference-Files/Common-Pitfalls-to-Avoid.md`
+- Code Standards: `reference-files/Code-Standards.md`
+- Common Pitfalls: `reference-files/Common-Pitfalls-to-Avoid.md`
+- **Agent Logging Standards: `reference-files/Agent-Logging-Standards.md`** (MANDATORY)
