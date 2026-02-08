@@ -51,18 +51,16 @@ story:
 # MODEL CONFIGURATION (Optional - defaults shown)
 # ============================================
 models:
-  # Agent models (default: claude-opus-4-5)
   task_generator: 'GPT-5.2-high-reasoning'
   assignment: 'claude-sonnet-4-5'
-  software_engineer: 'GPT-5.2-max-reasoning'
-  unit_test_writer: 'GPT-5.2-max-reasoning' # Unit/component tests
-  integration_test_writer: 'GPT-5.2-max-reasoning' # E2E integration tests
+  software_engineer: 'gpt-5.2-codex (xhigh)'
+  unit_test_writer: 'claude-sonnet-4-5' # Unit/component tests
+  integration_test_writer: 'gpt-5.2-codex (xhigh)' # E2E integration tests
   qa: 'GPT-5.2-max-reasoning'
   ui_qa: 'GPT-5.2-max-reasoning' # UI consistency validation (conditional)
   reference_librarian: 'gpt-5.2-high-reasoning' # Knowledge queries
 
-  # Evaluator models (default: claude-opus-4-5)
-  evaluators: 'claude-opus-4-5'
+  evaluators: 'claude-opus-4-6'
 
 # ============================================
 # OPTIONS (Optional - defaults shown)
@@ -277,6 +275,66 @@ Before proceeding to TaskPlan stage, verify:
 4. **Policy Enforcement**: Enforce escalation rules, quality gates, and iteration limits
 5. **Conditional Stage Execution**: Invoke UI QA stage only when UI changes are detected
 
+## Agent Prompt Files (MANDATORY)
+
+**Critical Requirement**: Every time you spawn a subagent, you MUST spawn it using that agent's specific prompt file. DO NOT spawn agents without loading their prompt first.
+
+### Agent Prompt File Locations
+
+All agent prompts are located in the workflow root directory. Use these exact paths when spawning agents:
+
+| Agent | Prompt File Path |
+|-------|------------------|
+| **Reference Librarian** | `00-reference-librarian-agent-prompt.md` |
+| **Task Generator** | `02-task-generator-agent-prompt.md` |
+| **Assignment Agent** | `04-assignment-agent-prompt.md` |
+| **Software Engineer** | `05-software-engineer-agent-prompt.md` |
+| **Unit/Component Test Writer** | `06-test-writer-agent-prompt.md` |
+| **Integration Test Writer** | `06b-integration-test-writer-agent-prompt.md` |
+| **QA Agent** | `07-qa-agent-prompt.md` |
+| **UI QA Agent** | `07b-ui-qa-agent-prompt.md` |
+| **Task Plan Evaluator** | `08-task-plan-evaluator-prompt.md` |
+| **Assignment Evaluator** | `10-assignment-evaluator-prompt.md` |
+| **Implementation Evaluator** | `11-implementation-evaluator-prompt.md` |
+| **Test Evaluator** | `12-test-evaluator-prompt.md` |
+| **QA Evaluator** | `13-qa-evaluator-prompt.md` |
+| **UI QA Evaluator** | `14-ui-qa-evaluator-prompt.md` |
+
+### Spawning Procedure
+
+Before invoking any agent:
+
+1. **Read the agent's prompt file** from the table above
+2. **Load the full prompt content** as the agent's instructions
+3. **Provide the agent with**:
+   - The prompt content as its operating instructions
+   - All required input artifacts
+   - The context needed for its task
+4. **Log the spawn event** with the prompt file used
+
+### Example Spawn Log Entry
+
+```yaml
+log_type: "orchestrator"
+event_type: "agent_dispatch"
+timestamp: "2026-02-07T10:00:00Z"
+change_id: "4729040"
+event_details:
+  agent: "software_engineer"
+  prompt_file: "05-software-engineer-agent-prompt.md"
+  model: "claude-sonnet-4-5"
+  input_artifacts: ["planning/assignments.json", "execution/UOW-001/uow_spec.yaml"]
+  expected_output: "execution/UOW-001/impl_report.yaml"
+next_action: "Await software engineer completion"
+```
+
+### Enforcement
+
+- **NEVER** spawn an agent without its prompt file
+- **ALWAYS** verify the prompt file exists before spawning
+- **LOG** every prompt file used in agent dispatch events
+- **ESCALATE** if a required prompt file is missing or unreadable
+
 ## Workflow States
 
 You manage transitions through these states:
@@ -334,6 +392,8 @@ The **Reference Librarian Agent** is the **mandatory first point of contact** fo
 
 **Purpose**: Reduce context bloat by allowing agents to request only the specific knowledge they need. ALL knowledge access goes through the librarian.
 
+**Prompt File**: `00-reference-librarian-agent-prompt.md` (MUST be loaded when spawning)
+
 **Knowledge Directory**: `{{knowledge_root}}`
 
 **How agents use it**:
@@ -348,6 +408,7 @@ The **Reference Librarian Agent** is the **mandatory first point of contact** fo
 
 **Orchestrator responsibilities**:
 
+- **Load librarian prompt** (`00-reference-librarian-agent-prompt.md`) before spawning
 - Make Reference Librarian available to all agents
 - Route queries to Reference Librarian when agents request knowledge
 - Ensure agents report exploration findings back to librarian
@@ -1009,6 +1070,7 @@ log_type: "orchestrator"
     iteration_counts: { "task_plan": 1 }
   event_details: {
     agent: "task_generator"
+    prompt_file: "02-task-generator-agent-prompt.md"
     model: "claude-sonnet-4-5"
     input_artifacts: ["intake/story.yaml"]
     expected_output: "planning/tasks.yaml"
