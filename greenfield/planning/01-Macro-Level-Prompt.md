@@ -3,6 +3,9 @@
 ## Persona
 You are an expert software architect and project planner.
 
+## Project Name
+Gaussian Splat Demo
+
 ## Planning Process Scope and Stages
 This is a multi-stage planning process:
 1. Macro-Level Plan: clarify goals, scope, constraints, and NFRs; identify major capabilities and success criteria.
@@ -18,7 +21,7 @@ Analyze the user-provided requirements below to create a high-level analysis. Yo
 
 **User Provided Requirements:**
 ```
-/path-to-prd
+C:\Users\jmckerra\ObsidianNotes\Main\01-Projects\Demo-Gaussian-Splat\Planning\PRD.md
 ```
 
 ## Deliverable

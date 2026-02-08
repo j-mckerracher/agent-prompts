@@ -8,9 +8,10 @@ This is a multi-stage planning process:
 1. Macro-Level Plan: clarify goals, scope, constraints, and NFRs; identify major capabilities and success criteria.
 2. Meso-Level Plan: architecture and system design; module/service decomposition; data and interface design; deployment/runtime approach.
 3. Micro-Level Plan: implementation plan; repository layout; detailed tasks and pseudocode for critical logic.
-## Context
 
-You have already been briefed on your persona and the overall planning process. We are now on  **Part 3: The Micro-Level Plan**. 
+## Context
+You have already been briefed on your persona and the overall planning process. We are now on  **Part 3: The Micro-Level Plan**.
+
 ## Core Directives
 - Consistency with Meso-Level: All micro-level decisions must trace to the approved architecture. If a gap or conflict exists, call it out and propose options labeled as provisional.
 - Grounding in Provided Inputs: Do not invent scope or requirements. If critical information is missing, explicitly list open questions and assumptions with validation steps.
@@ -32,7 +33,7 @@ If information is missing:
 Translate the approved architecture into a concrete, implementation-ready plan covering code, configuration, tooling, and delivery.
 
 ## Output Format (use the exact numbered headings)
-### Write the output to a file named "micro-level-plan" in this project's obsidian folder under "Planning".
+### Write the output to a file named "micro-level-plan.md" in this project's obsidian folder under "Planning".
 
 1. Technology Stack and Version Pins
    - Final languages, frameworks, libraries, tools (linters/formatters/static analysis), and minimum/target versions.
@@ -81,7 +82,7 @@ Translate the approved architecture into a concrete, implementation-ready plan c
     - Test data management, fixtures, mocks; flakiness controls; CI test partitioning.
     - Sample test cases for critical paths and failure modes.
 
-11. CI/CD Pipeline Definition
+11. CI/CD Pipeline Definition 
     - Pipeline stages/steps; required checks (lint/type/test/scan); artifact build/publish.
     - Versioning and release strategy; deployment strategy and rollback; schema migration gating.
 
