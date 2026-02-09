@@ -1,8 +1,6 @@
 knowledge_root: "/absolute/path/to/repo/sequential-task-decomp-with-eval-optimizer-loop/agent-reference/knowledge/"
 artifact_root: "/absolute/path/to/work/artifacts/"
 obsidian_vault_root: "/absolute/path/to/Obsidian-Vault"
-e2e_tests_root: "/absolute/path/to/e2e-tests-project"
 project_type: "brownfield" # "greenfield" for new projects
 planning_docs_root: "" # Optional: folder containing PRD/plans (absolute path)
 planning_docs_paths: [] # Optional: explicit list of planning doc files (overrides root)
-test_stack: "jest+cypress" # Optional: override if using different test tools

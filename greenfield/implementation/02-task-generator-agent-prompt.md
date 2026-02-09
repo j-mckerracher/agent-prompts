@@ -1,6 +1,6 @@
 <!-- CONFIGURATION -->
 <!-- Before running, read 'workflow-config.yaml' at the workflow root to resolve the following paths: -->
-<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}}, {{e2e_tests_root}} -->
+<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}} -->
 
 # Task Generator Agent Prompt
 
@@ -143,7 +143,6 @@ Consider these typical task categories:
 - Frontend UI components
 - Integration / wiring
 - Error handling and edge cases
-- Testing setup and configuration
 
 ## Revision Guidelines
 

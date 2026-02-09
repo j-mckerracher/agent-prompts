@@ -1,18 +1,17 @@
 <!-- CONFIGURATION -->
 <!-- Before running, read 'workflow-config.yaml' at the workflow root to resolve the following paths: -->
-<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}}, {{e2e_tests_root}} -->
+<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}} -->
 
 # Sequential Task Decomposition with Evaluator-Optimizer Loop
 
-A multi-agent workflow for implementing user stories from acceptance criteria through implementation, testing, and QA.
+A multi-agent workflow for implementing user stories from acceptance criteria through implementation and QA.
 
 ## Overview
 
 This workflow uses specialized AI agents to:
 1. Decompose a user story into tasks (UoWs are supplied by planning docs for greenfield)
 2. Implement changes with scope control
-3. Write tests based on the configured `test_stack`
-4. Validate acceptance criteria with evidence
+3. Validate acceptance criteria with evidence
 
 Each stage includes an **Evaluator-Optimizer loop** that iteratively refines outputs until quality gates pass. For greenfield projects, PRD/plan documents are the source of truth until code exists.
 
@@ -25,10 +24,8 @@ To run this workflow on a new machine or share it with team members:
     *   `knowledge_root`: Path to `agent-reference/knowledge/` in this repo.
     *   `artifact_root`: Where you want output files stored.
     *   `obsidian_vault_root`: Path to your Obsidian Vault (if used).
-    *   `e2e_tests_root`: Path to the E2E test project.
     *   `project_type`: Set to `"greenfield"` for new projects without an existing codebase.
     *   `planning_docs_root` or `planning_docs_paths`: Required for greenfield to point to PRD/plan docs.
-    *   `test_stack`: Optional override if not using Jest/Cypress.
 
 ## Quick Start
 
@@ -47,7 +44,6 @@ workflow:
   project_type: "brownfield"       # "greenfield" for new projects
   planning_docs_root: ""           # Optional: folder of PRD/plan docs
   planning_docs_paths: []          # Optional: explicit list of PRD/plan files
-  test_stack: "jest+cypress"       # Optional: override test tooling
 
 story:
   title: ""                        # Required: Brief title
@@ -61,7 +57,6 @@ story:
 
 models:                            # Optional - defaults to claude-sonnet-4-5 for agents
   software_engineer: "claude-sonnet-4-5"
-  test_writer: "claude-sonnet-4-5"
 ```
 
 ### 3. Paste Your Completed YAML
@@ -100,32 +95,23 @@ The Orchestrator controls the workflow and delegates to specialized agents. **Al
 │  PLANNING     │              │  EXECUTION    │              │  VALIDATION   │
 └───────┬───────┘              └───────┬───────┘              └───────┬───────┘
         │                               │                               │
-┌───────┴───────┐              ┌───────┴───────┐                       │
-│               │              │               │                       │
-▼               ▼              ▼               ▼                       ▼
-┌────────┐   ┌───────────┐   ┌──────────┐   ┌───────────┐           ┌──────────┐
-│ Task   │   │ Assignm.  │   │ Software │   │   Test    │           │    QA    │
-│Generat.│   │  Agent    │   │ Engineer │   │  Writers  │           │  Agent   │
-└───┬────┘   └─────┬─────┘   └────┬─────┘   └─────┬─────┘           └────┬─────┘
-    │              │              │               │                      │
-    │              │              │         ┌─────┴─────┐                │
-    │              │              │         │           │                │
-    │              │              │         ▼           ▼                │
-    │              │              │    ┌────────┐ ┌───────────┐          │
-    │              │              │    │  Unit  │ │Integration│          │
-    │              │              │    │  Test  │ │   Test    │          │
-    │              │              │    │ Writer │ │  Writer   │          │
-    │              │              │    └────────┘ └───────────┘          │
-    │              │              │                                      │
-    │              │              │                              ┌───────┴───────┐
-    │              │              │                              │               │
-    ▼              ▼              ▼                              ▼               ▼
-┌────────┐   ┌──────────┐                   ┌──────────┐   ┌──────────┐
-│Assignm.│   │          │                   │    QA    │   │  UI QA   │
-│ Agent  │   │          │                   │  Agent   │   │  Agent   │
-└────────┘   │          │                   └──────────┘   └──────────┘
-             │          │                         │        (conditional)
-             ▼          ▼                         ▼
+┌───────┴───────┐                       │                               │
+│               │                       │                               │
+▼               ▼                       ▼                               ▼
+┌────────┐   ┌───────────┐        ┌──────────┐                   ┌──────────┐
+│ Task   │   │ Assignm.  │        │ Software │                   │    QA    │
+│Generat.│   │  Agent    │        │ Engineer │                   │  Agent   │
+└───┬────┘   └─────┬─────┘        └────┬─────┘                   └────┬─────┘
+    │              │                    │                              │
+    │              │                    │                      ┌───────┴───────┐
+    │              │                    │                      │               │
+    ▼              ▼                    ▼                      ▼               ▼
+┌────────┐   ┌──────────┐                               ┌──────────┐   ┌──────────┐
+│Assignm.│   │          │                               │    QA    │   │  UI QA   │
+│ Agent  │   │          │                               │  Agent   │   │  Agent   │
+└────────┘   │          │                               └──────────┘   └──────────┘
+             │          │                                     │        (conditional)
+             ▼          ▼                                     ▼
          ┌──────────────────────────────────────────────────────────────────────┐
          │                      REFERENCE LIBRARIAN                             │
          │    (Mandatory first point of contact for ALL knowledge queries)      │
@@ -134,8 +120,8 @@ The Orchestrator controls the workflow and delegates to specialized agents. **Al
 
                                 EVALUATORS (one per stage)
          ┌───────────────────────────────────────────────────────────────────────────────────┐
-         │  Task Plan    │  Assignment  │  Impl  │  Test  │  QA   │  UI QA    │
-         │  Evaluator    │  Evaluator   │  Eval  │  Eval  │ Eval  │  Eval     │
+         │  Task Plan    │  Assignment  │  Impl  │  QA   │  UI QA    │
+         │  Evaluator    │  Evaluator   │  Eval  │ Eval  │  Eval     │
          └───────────────────────────────────────────────────────────────────────────────────┘
                     ▲                          ▲                      ▲
                     └──── Feedback Loop ───────┴───── Revisions ──────┘
@@ -148,8 +134,6 @@ The Orchestrator controls the workflow and delegates to specialized agents. **Al
 | Task Generator | ✅ Yes |
 | Assignment Agent | ✅ Yes |
 | Software Engineer | ✅ Yes |
-| Unit/Component Test Writer | ✅ Yes |
-| Integration Test Writer | ✅ Yes |
 | QA Agent | ✅ Yes |
 | UI QA Agent (conditional) | ✅ Yes |
 | *All Evaluators* | No (evaluators don't access knowledge) |
@@ -193,25 +177,7 @@ The Orchestrator controls the workflow and delegates to specialized agents. **Al
 - **Agent**: Software Engineer
 - **Evaluator**: Implementation Evaluator
 - **Output**: `execution/{UOW-ID}/impl_report.yaml`
-- **What happens**: Implements code changes, runs existing tests (or initializes the test stack for greenfield)
-
-**5b. Unit/Component Testing**
-- **Agent**: Unit/Component Test Writer
-- **Evaluator**: Unit Test Evaluator
-- **Output**: `execution/{UOW-ID}/unit_test_report.yaml`
-- **What happens**: Writes unit and component tests co-located with code
-
-**5c. Integration Testing**
-- **Agent**: Integration Test Writer
-- **Evaluator**: Integration Test Evaluator
-- **Output**: `execution/{UOW-ID}/integration_test_report.yaml`
-- **What happens**: Writes E2E tests in the dedicated E2E app
-
-**Integration Test App Location**:
-```
-{{e2e_tests_root}}
-```
-If `test_stack` excludes integration tests or `e2e_tests_root` is empty, the Integration Test Writer should document a skip or scaffold the E2E app as part of setup UoWs.
+- **What happens**: Implements code changes for the assigned UoW
 
 ### Stage 6: QA
 - **Agent**: QA Agent
@@ -233,7 +199,7 @@ If `test_stack` excludes integration tests or `e2e_tests_root` is empty, the Int
 - **What happens**: User reviews completed work, approves or requests fixes
 
 ### Stage 8: Remediation (if needed)
-- **Agents**: Routed based on issue type (Software Engineer, Unit Test Writer, Integration Test Writer, UI QA Agent, etc.)
+- **Agents**: Routed based on issue type (Software Engineer, UI QA Agent, etc.)
 - **Output**: `feedback/remediation_uows.yaml`, updated implementation
 - **What happens**: Fixes user-identified issues, runs evaluator loop, returns for re-review
 
@@ -345,7 +311,6 @@ The Reference Librarian uses **`gpt-5.2-high-reasoning`** for knowledge queries.
 ```yaml
 models:
   software_engineer: "claude-sonnet-4-5"
-  test_writer: "claude-sonnet-4-5"
   evaluators: "claude-haiku-4-5"
 ```
 
@@ -354,7 +319,6 @@ models:
 models:
   task_generator: "claude-sonnet-4-5"
   software_engineer: "claude-opus-4-5"
-  test_writer: "claude-sonnet-4-5"
   evaluators: "claude-sonnet-4-5"
 ```
 
@@ -376,8 +340,6 @@ models:
 │   ├── task_generator/     # Task planning sessions
 │   ├── assignment/         # Scheduling sessions
 │   ├── software_engineer/  # Implementation sessions
-│   ├── unit_test_writer/   # Unit/component test sessions
-│   ├── integration_test_writer/ # E2E test sessions
 │   ├── qa/                 # QA validation sessions
 │   ├── ui_qa/              # UI QA sessions (Playwright-based)
 │   └── remediation/        # Remediation session logs
@@ -390,8 +352,6 @@ models:
 ├── execution/
 │   ├── UOW-001/
 │   │   ├── impl_report.yaml
-│   │   ├── unit_test_report.yaml      # From Unit/Component Test Writer
-│   │   ├── integration_test_report.yaml # From Integration Test Writer
 │   │   └── eval_impl_1.yaml
 │   └── UOW-002/
 │       └── ...
@@ -443,8 +403,6 @@ All logs use the format: `{YYYYMMDD_HHMMSS}_{identifier}_session.yaml`
 | Task Generator | `logs/task_generator/` | `20260127_143500_session.yaml` |
 | Assignment | `logs/assignment/` | `20260127_153000_session.yaml` |
 | Software Engineer | `logs/software_engineer/` | `20260127_160000_UOW-001_session.yaml` |
-| Unit/Component Test Writer | `logs/unit_test_writer/` | `20260127_170000_UOW-001_session.yaml` |
-| Integration Test Writer | `logs/integration_test_writer/` | `20260127_173000_UOW-001_session.yaml` |
 | QA | `logs/qa/` | `20260127_180000_session.yaml` |
 | UI QA (conditional) | `logs/ui_qa/` | `20260127_181500_session.yaml` |
 
@@ -541,25 +499,13 @@ When escalated, check:
 | `02-task-generator-agent-prompt.md` | Task Generator | Creates broad task plan |
 | `04-assignment-agent-prompt.md` | Assignment | Schedules execution order |
 | `05-software-engineer-agent-prompt.md` | Software Engineer | Implements code changes |
-| `06-test-writer-agent-prompt.md` | Unit/Component Test Writer | Writes unit & component tests (co-located) |
-| `06b-integration-test-writer-agent-prompt.md` | Integration Test Writer | Writes E2E tests (separate app) |
 | `07-qa-agent-prompt.md` | QA | Validates acceptance criteria |
 | `07b-ui-qa-agent-prompt.md` | UI QA (conditional) | Validates UI consistency using Playwright CLI |
 | `08-task-plan-evaluator-prompt.md` | Task Plan Evaluator | Evaluates task plans |
 | `10-assignment-evaluator-prompt.md` | Assignment Evaluator | Evaluates schedules |
 | `11-implementation-evaluator-prompt.md` | Implementation Evaluator | Evaluates code changes |
-| `12-test-evaluator-prompt.md` | Test Evaluator | Evaluates test coverage |
 | `13-qa-evaluator-prompt.md` | QA Evaluator | Evaluates QA reports |
 | `14-ui-qa-evaluator-prompt.md` | UI QA Evaluator | Evaluates UI consistency reports |
-
-### Test Writer Agents
-
-Testing is split between two specialized agents:
-
-| Agent | Test Types | Location |
-|-------|------------|----------|
-| **Unit/Component Test Writer** | Unit tests, component tests | Co-located with code (`src/components/__tests__/`, `src/services/__tests__/`) |
-| **Integration Test Writer** | E2E integration tests | Separate app: `{{e2e_tests_root}}` |
 
 ---
 
@@ -640,7 +586,7 @@ When you review completed work and find issues, provide feedback using this temp
 feedback:
   issues:
     - description: "Tooltip link opens in same tab instead of new tab"
-      type: "bug"               # bug|missing_feature|test_gap|ux_issue|spec_clarification
+      type: "bug"               # bug|missing_feature|ux_issue|spec_clarification
       severity: "high"          # critical|high|medium|low
       affected_acs: ["AC-003"]
       reproduction_steps: "1. Hover tooltip 2. Click person ID 3. Opens in same tab"
@@ -655,7 +601,6 @@ feedback:
 |------|-----------|---------------|
 | `bug` | Software Engineer | Code doesn't work as expected |
 | `missing_feature` | Task Generator (new UoW) | Functionality not implemented |
-| `test_gap` | Test Writer | Missing test coverage |
 | `ux_issue` | Software Engineer | UI/UX problem |
 | `spec_clarification` | You (escalated) | Requirements unclear |
 
@@ -707,11 +652,6 @@ Check the evaluation files (`eval_*_k.yaml`) for:
 - Conflicting feedback
 - Missing context the agent needs
 
-### Tests failing repeatedly
-1. Check `execution/{UOW-ID}/logs/` for Jest/Cypress output
-2. Review `eval_impl_*.yaml` for implementation evaluator feedback
-3. Consider if the AC is actually testable as written
-
 ### Agent producing invalid YAML
 The orchestrator will re-prompt for schema-compliant output. If persistent:
 1. Check if the story input has unusual formatting
@@ -740,12 +680,10 @@ The orchestrator will re-prompt for schema-compliant output. If persistent:
 #    - Assignment Evaluator: PASS
 
 # 5. Execution loop (for each UoW):
-#    - Software Engineer implements → Jest passes
+#    - Software Engineer implements
 #    - Implementation Evaluator: PASS
-#    - Test Writer adds tests → Cypress passes
-#    - Test Evaluator: PASS
 
-# 7. QA validates all ACs
+# 6. QA validates all ACs
 #    - QA Evaluator: PASS
 #    - Final summary written to summary/final_summary.md
 

@@ -13,10 +13,8 @@ Get up and running with the Sequential Task Decomposition workflow in under 5 mi
     *   `knowledge_root`: Path to `agent-reference/knowledge/` (Absolute path)
     *   `artifact_root`: Where you want output files stored (Absolute path)
     *   `obsidian_vault_root`: Your Obsidian vault location (Absolute path)
-    *   `e2e_tests_root`: Path to the E2E test project (Absolute path)
     *   `project_type`: Use `"greenfield"` for new projects without an existing codebase
     *   `planning_docs_root` or `planning_docs_paths`: Point to PRD/plan docs if greenfield
-    *   `test_stack`: Optional override if not using Jest/Cypress
 
 ## 2. Running the Workflow
 
@@ -29,7 +27,7 @@ Get up and running with the Sequential Task Decomposition workflow in under 5 mi
 3.  **Execute Stages**:
     Follow the agent's guidance. The workflow proceeds sequentially:
     *   **Planning**: Task Gen → Assignment (UoWs sourced from planning docs)
-    *   **Execution**: Implementation → Unit Tests → Integration Tests
+    *   **Execution**: Implementation
     *   **Validation**: QA → UI QA (if applicable)
 
 ## 3. Monitoring & Logs

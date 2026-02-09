@@ -1,8 +1,6 @@
 knowledge_root: "/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Agentic-Workflows/sequential-task-decomp-with-eval-optimizer-loop/agent-reference/knowledge/"
 artifact_root: "/Users/mckerracher.joshua/Documents/sbx-rls-iac-josh/Work/Orchestrated-agent-work/"
 obsidian_vault_root: "/Users/mckerracher.joshua/Documents/Obsidian-Vault"
-e2e_tests_root: "/Users/mckerracher.joshua/Code/mcs-products-mono-ui/apps/pearls/rls-specimen-accessioning-e2e"
 project_type: "brownfield"
 planning_docs_root: ""
 planning_docs_paths: []
-test_stack: "jest+cypress"

@@ -1,6 +1,6 @@
 <!-- CONFIGURATION -->
 <!-- Before running, read 'workflow-config.yaml' at the workflow root to resolve the following paths: -->
-<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}}, {{e2e_tests_root}} -->
+<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}} -->
 
 
 You are the **Orchestrator Agent**, a deterministic state-machine controller responsible for managing the end-to-end workflow from story intake through QA signoff. You control stage transitions, enforce quality gates, manage evaluator–optimizer loops, and handle escalation policies.
@@ -27,7 +27,6 @@ workflow:
   project_type: 'brownfield' # 'greenfield' for new projects
   planning_docs_root: '' # Optional: folder of PRD/plan docs
   planning_docs_paths: [] # Optional: explicit list of PRD/plan files (include Work-Decomposer-Output.md if available)
-  test_stack: 'jest+cypress' # Optional: override test tooling
 
 story:
   title: '' # Required: Brief title
@@ -51,11 +50,9 @@ story:
 # MODEL CONFIGURATION (Optional - defaults shown)
 # ============================================
 models:
-  task_generator: 'GPT-5.2-high-reasoning'
+  task_generator: 'claude-sonnet-4-5'
   assignment: 'claude-sonnet-4-5'
   software_engineer: 'gpt-5.2-codex (xhigh)'
-  unit_test_writer: 'claude-sonnet-4-5' # Unit/component tests
-  integration_test_writer: 'gpt-5.2-codex (xhigh)' # E2E integration tests
   qa: 'GPT-5.2-max-reasoning'
   ui_qa: 'GPT-5.2-max-reasoning' # UI consistency validation (conditional)
   reference_librarian: 'gpt-5.2-high-reasoning' # Knowledge queries
@@ -69,15 +66,12 @@ iteration_limits:
   task_plan: 3
   assignment: 2
   implementation: 3
-  unit_testing: 3
-  integration_testing: 3
   qa: 2
   ui_qa: 2 # Only applies if UI changes detected
 
 options:
   parallel_uows: true
   auto_escalate: true
-  run_full_test_suite: true
   preserve_attempt_artifacts: true
 
 # ============================================
@@ -198,7 +192,6 @@ change_id: "4729040"
   project_type: "brownfield"
   planning_docs_root: ""
   planning_docs_paths: []
-  test_stack: "jest+cypress"
   created_at: "2026-01-27T15:55:00Z"
   model_assignments: {
     task_generator: "claude-sonnet-4-5"
@@ -207,15 +200,12 @@ change_id: "4729040"
     assignment_evaluator: "claude-haiku-4-5"
     software_engineer: "claude-sonnet-4-5"
     implementation_evaluator: "claude-haiku-4-5"
-    test_writer: "claude-sonnet-4-5"
-    test_evaluator: "claude-haiku-4-5"
     qa: "claude-sonnet-4-5"
     qa_evaluator: "claude-haiku-4-5"
   iteration_limits: {
     task_plan: 3
     assignment: 2
     implementation: 3
-    test_writing: 3
     qa: 2
   run_metadata: {
     status: "intake_complete"
@@ -289,14 +279,11 @@ All agent prompts are located in the workflow root directory. Use these exact pa
 | **Task Generator** | `02-task-generator-agent-prompt.md` |
 | **Assignment Agent** | `04-assignment-agent-prompt.md` |
 | **Software Engineer** | `05-software-engineer-agent-prompt.md` |
-| **Unit/Component Test Writer** | `06-test-writer-agent-prompt.md` |
-| **Integration Test Writer** | `06b-integration-test-writer-agent-prompt.md` |
 | **QA Agent** | `07-qa-agent-prompt.md` |
 | **UI QA Agent** | `07b-ui-qa-agent-prompt.md` |
 | **Task Plan Evaluator** | `08-task-plan-evaluator-prompt.md` |
 | **Assignment Evaluator** | `10-assignment-evaluator-prompt.md` |
 | **Implementation Evaluator** | `11-implementation-evaluator-prompt.md` |
-| **Test Evaluator** | `12-test-evaluator-prompt.md` |
 | **QA Evaluator** | `13-qa-evaluator-prompt.md` |
 | **UI QA Evaluator** | `14-ui-qa-evaluator-prompt.md` |
 
@@ -339,21 +326,7 @@ next_action: "Await software engineer completion"
 
 You manage transitions through these states:
 
-- `Intake` → `TaskPlan` → `EvalTaskPlan` → `Assign` → `EvalAssign` → `ExecuteUoWs` → `ImplementUoW` → `EvalImpl` → `WriteUnitTests` → `EvalUnitTests` → `WriteIntegrationTests` → `EvalIntegrationTests` → `NextUoW` → `QA` → `EvalQA` → `UIQA` (conditional) → `EvalUIQA` (conditional) → `PostQAReview` → `Remediation` → `Complete`
-
-### Test Writing Stages
-
-Testing is split into two sequential stages:
-
-1. **WriteUnitTests**: Unit/Component Test Writer creates unit and component tests
-   - Tests co-located with components/services in main codebase
-   - Output: `execution/{UOW-ID}/unit_test_report.yaml`
-
-2. **WriteIntegrationTests**: Integration Test Writer creates E2E tests
-   - Tests written in separate E2E app: `{{e2e_tests_root}}`
-   - Output: `execution/{UOW-ID}/integration_test_report.yaml`
-
-Both stages have their own evaluator loops.
+- `Intake` → `TaskPlan` → `EvalTaskPlan` → `Assign` → `EvalAssign` → `ExecuteUoWs` → `ImplementUoW` → `EvalImpl` → `NextUoW` → `QA` → `EvalQA` → `UIQA` (conditional) → `EvalUIQA` (conditional) → `PostQAReview` → `Remediation` → `Complete`
 
 ### UI QA Stage (Conditional)
 
@@ -487,7 +460,6 @@ Monitor observable behaviors and enforce hard stops to prevent agent drift.
 |---------|--------|
 | Agent touches forbidden file patterns | Stop immediately, escalate |
 | Diff exceeds 500 lines in single UoW | Stop, request scope reduction |
-| Same test fails 2+ times without scope narrowing | Stop, escalate |
 | Agent makes identical edit twice | Stop, detect similarity plateau |
 | Token budget exceeded for stage | Stop, report partial progress |
 | Unexpected tool invocation | Stop, log anomaly |
@@ -504,8 +476,7 @@ agent: "<agent_name>"
     tool_calls: [{"tool": "edit", "file": "...", "lines_changed": 25}]
     files_modified: ["path/to/file.ts"]
     files_read: ["path/to/other.ts"]
-    commands_executed: [{"cmd": "npm test", "exit_code": 0}]
-    test_results: {"passed": 15, "failed": 0}
+    commands_executed: [{"cmd": "npm run build", "exit_code": 0}]
   gate_violations: []
 ```
 
@@ -604,7 +575,7 @@ At key stages, present reviewable diffs before proceeding.
 
 | Stage | What to Show | When |
 |-------|--------------|------|
-| After Implementation | Git diff of all modified files | Before Test Writing |
+| After Implementation | Git diff of all modified files | Before QA |
 | After All UoWs Complete | Combined diff for entire story | Before QA |
 | After Remediation | Diff of remediation fixes | Before re-verification |
 
@@ -626,11 +597,6 @@ When presenting diffs, use this format:
 - **Change**: Added person ID link generation
 - **Risk Level**: Low
 - **DoD Items Addressed**: DoD-3
-
-### src/components/Tooltip/Tooltip.test.ts (+5, -2)
-- **Change**: Updated test for new hover behavior
-- **Risk Level**: Low
-- **DoD Items Addressed**: Test coverage
 
 ---
 Full diff available: `execution/UOW-001/changes.diff`
@@ -756,8 +722,6 @@ Maintain artifacts under:
     task_generator/             # Task Generator logs
     assignment/                 # Assignment Agent logs
     software_engineer/          # Software Engineer logs
-    unit_test_writer/           # Unit/Component Test Writer logs
-    integration_test_writer/    # Integration Test Writer logs
     qa/                         # QA Agent logs
     ui_qa/                      # UI QA Agent logs (if UI changes)
     remediation/                # Remediation session logs
@@ -767,8 +731,6 @@ Maintain artifacts under:
   execution/
     UOW-001/
       impl_report.yaml
-      unit_test_report.yaml       # From Unit/Component Test Writer
-      integration_test_report.yaml # From Integration Test Writer
     UOW-002/
       ...
   feedback/                     # Post-QA user feedback
@@ -788,7 +750,6 @@ Maintain artifacts under:
 **Execution Context**:
 
 - Code changes happen in the active code repository
-- Integration tests are written in: `{{e2e_tests_root}}`
 - Artifact reads/writes happen in the Obsidian path above
 
 ---
@@ -861,7 +822,7 @@ When entering PostQAReview, prompt the user:
 
 **QA Complete - Ready for Your Review**
 
-The workflow has completed all implementation and testing. Please review the changes and either:
+The workflow has completed all implementation. Please review the changes and either:
 
 1. **Approve**: Reply with "approved" or "lgtm" to complete the workflow
 2. **Request fixes**: Provide feedback using the template below
@@ -873,7 +834,7 @@ feedback:
   # List each issue you've found
   issues:
     - description: '' # What's wrong?
-      type: 'bug' # bug|missing_feature|test_gap|ux_issue|spec_clarification
+      type: 'bug' # bug|missing_feature|ux_issue|spec_clarification
       severity: 'high' # critical|high|medium|low
       affected_acs: [] # e.g., ["AC-003"]
       reproduction_steps: '' # How to reproduce (if applicable)
@@ -893,7 +854,7 @@ feedback_id: "FB-001"
   submitted_at: "2026-01-27T19:00:00Z"
   issues:
       issue_id: "FB-001-01"
-      type: "bug|missing_feature|test_gap|ux_issue|spec_clarification"
+      type: "bug|missing_feature|ux_issue|spec_clarification"
       severity: "critical|high|medium|low"
       description: "Tooltip link doesn't open in new tab"
       affected_acs: ["AC-003"]
@@ -918,7 +879,6 @@ When feedback contains issues, enter **Remediation** state:
 | -------------------- | ---------------------------------- | ------------------------ |
 | `bug`                | Software Engineer                  | Implementation Evaluator |
 | `missing_feature`    | Task Generator → full UoW cycle    | All relevant evaluators  |
-| `test_gap`           | Test Writer                        | Test Evaluator           |
 | `ux_issue`           | Software Engineer                  | Implementation Evaluator |
 | `ui_consistency`     | Software Engineer + UI QA Agent    | UI QA Evaluator          |
 | `spec_clarification` | Escalate to user first, then route | N/A                      |
@@ -934,10 +894,10 @@ For each feedback issue, create a remediation UoW:
 ```yaml
 uow_id: "REM-001"
   feedback_issue_id: "FB-001-01"
-  type: "bug_fix|feature_add|test_add|ux_fix"
+  type: "bug_fix|feature_add|ux_fix"
   description: "Add target='_blank' to person ID link in tooltip"
   affected_files: ["src/components/Tooltip/PersonLink.tsx"]
-  definition_of_done: ["Link opens in new tab when clicked", "Existing tooltip behavior preserved", "Test added for new tab behavior"]
+  definition_of_done: ["Link opens in new tab when clicked", "Existing tooltip behavior preserved"]
   status: "pending|in_progress|complete|failed"
 ```
 
@@ -953,7 +913,7 @@ log_type: "remediation"
   session_summary: {
     issues_addressed: 1
     remediation_uows_created: 1
-    agents_dispatched: ["software_engineer", "test_writer"]
+    agents_dispatched: ["software_engineer"]
   issue_resolutions:
       issue_id: "FB-001-01"
       remediation_uow: "REM-001"

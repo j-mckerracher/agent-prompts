@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Retrieval-optimized index for Reference Librarian knowledge taxonomy and storage conventions.",
+  "updated_at": "",
+  "taxonomy": {
+    "category_naming": "lowercase snake_case",
+    "categories": {}
+  },
+  "stores": {
+    "accumulated-knowledge.md": {
+      "role": "Narrative, human-readable accumulated knowledge.",
+      "optimized_for": "reading"
+    },
+    "learnings.json": {
+      "role": "Structured, retrieval-optimized learnings.",
+      "optimized_for": "search/filter",
+      "required_fields": ["id", "story_id", "category", "description", "created_at"],
+      "recommended_fields": ["file_paths", "code_pattern", "line_numbers", "url_pattern", "tags", "keywords"]
+    },
+    "questions.json": {
+      "role": "Active questions queue / tracking.",
+      "optimized_for": "workflow state"
+    },
+    "standing-questions.md": {
+      "role": "Unanswered questions needing human input or future research.",
+      "optimized_for": "triage"
+    }
+  }
+}

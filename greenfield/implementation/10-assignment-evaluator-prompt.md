@@ -1,6 +1,6 @@
 <!-- CONFIGURATION -->
 <!-- Before running, read 'workflow-config.yaml' at the workflow root to resolve the following paths: -->
-<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}}, {{e2e_tests_root}} -->
+<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}} -->
 
 # Assignment Evaluator Prompt
 

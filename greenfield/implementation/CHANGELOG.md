@@ -8,6 +8,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Removed
+- **Test Writing Agents** — Deleted `06-test-writer-agent-prompt.md` (Unit/Component Test Writer), `06b-integration-test-writer-agent-prompt.md` (Integration Test Writer), and `12-test-evaluator-prompt.md` (Test Evaluator). This workflow variant does not include automated test writing.
+- **`test_stack` configuration** — Removed from `workflow-config.yaml`, `workflow-config.example.yaml`, orchestrator YAML template, and all agent prompts.
+- **`e2e_tests_root` configuration** — Removed from all config files and agent prompt headers.
+- **Jest/Cypress gates** — Removed Jest Gate from Implementation Evaluator and Jest/Cypress Full Suite gates from QA Evaluator.
+- **Test-related workflow stages** — Removed stages 5b (Unit/Component Testing) and 5c (Integration Testing) from the orchestrator and README.
+- **`test_gap` issue type** — Removed from QA Agent, QA Evaluator, and post-QA feedback routing.
+- **Test writer log directories** — Removed `logs/unit_test_writer/` and `logs/integration_test_writer/` from directory structure.
+- **Test report artifacts** — Removed `unit_test_report.yaml` and `integration_test_report.yaml` from execution output.
+
+### Changed
+- Updated all agent prompts to remove test-related references while preserving core functionality.
+- Updated README.md: Agent Hierarchy diagram, Agent Invocation table, Workflow Stages, Directory Structure, Agent Prompts Reference table, Model Configuration, Example Workflow Run, and Troubleshooting.
+- Updated QUICKSTART.md: Removed test_stack/e2e_tests_root from setup, simplified execution stages.
+- Playwright UI QA (`07b-ui-qa-agent-prompt.md`, `14-ui-qa-evaluator-prompt.md`) remains unchanged — it performs visual validation, not test suite execution.
+
 ## [2026-02-02]
 
 ### Added

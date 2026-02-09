@@ -1,6 +1,6 @@
 <!-- CONFIGURATION -->
 <!-- Before running, read 'workflow-config.yaml' at the workflow root to resolve the following paths: -->
-<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}}, {{e2e_tests_root}} -->
+<!-- {{knowledge_root}}, {{artifact_root}}, {{obsidian_vault_root}} -->
 
 # Assignment Agent Prompt
 
@@ -102,9 +102,8 @@ story_id: "<CHANGE-ID>"
 
 Assign to these roles:
 - `software_engineer`: Implementation work
-- `test_writer`: Test-only additions (post-implementation)
 
-Note: Test writing follows implementation in the same UoW execution cycle, not as separate assignments.
+Note: The workflow does not include automated test writing stages.
 
 ## Parallelization Safety Checks
 
