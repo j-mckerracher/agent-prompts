@@ -28,7 +28,7 @@ We will run a structured, multi-stage planning process:
 ## If information is missing
 - Begin with “Open Questions and Blocked Decisions,” grouped by category (Requirements, NFRs, Constraints, Dependencies, Risks).
 - Where helpful, propose clearly labeled, testable assumptions with a validation plan; mark downstream decisions as provisional until confirmed.
-- You MUST use the AskUserQuestion tool for any ambiguities, contradictions, or missing information.
+- You MUST use the `AskUserQuestion` tool for any ambiguities, contradictions, or missing information.
 
 ## Artifacts by Stage (high level)
 - Macro-Level Output: clarified problem statement, goals, in/out of scope, stakeholders, constraints, NFRs, major capabilities, risks/assumptions, and success metrics.
